@@ -5,7 +5,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <link rel="stylesheet" href="./styles/jass.css" />
   <link rel="stylesheet" href="./assets/css/style.css" />
   <title>Weather Dashboard</title>
 </head>
@@ -18,62 +17,40 @@
   <!-- max-width for ultra wide resolutions -->
   <div class="container-fluid" style="max-width: 1400px">
     <div class="row">
-      <div class="col-lg-9 pb-3">
-        <section id="today" class="mt-3" role="region" aria-live="polite"></section>
-        <section id="forecast" class="row mt-3" role="region" aria-live="polite"></section>
-
-        <!-- Weather App Project JavaScript Section -->
-        <div class="container">
-          <div class="weather-input">
-            <h3>Search for a City:</h3>
-            <input class="city-input" type="text" placeholder="San Diego">
-            <button class="search-btn">Search</button>
-          </div>
-          <div class="weather-data">
-            <div class="current-weather">
-              <div class="details">
-                <h2>_______ ( ______ )</h2>
-                <h6>Temperature: __°C</h6>
-                <h6>Wind: __ M/S</h6>
-                <h6>Humidity: __%</h6>
+      <div class="container">
+        <div class="weather-input">
+          <h2 id="form-heading" class="mt-1 h3 form-label">
+            Search for a City:
+          </h2>
+          <form id="search-form" class="form">
+            <div class="form-inline form-group">
+              <div class="input-group">
+                <input class="form-input weather-search" type="text" id="search-input"
+                  placeholder="E.g., New York, Los Angeles, Miami" aria-labelledby="form-heading"
+                  aria-controls="today forecast" />
+                <div class="input-group-append">
+                  <button type="submit" class="btn search-button" id="search-button" aria-label="submit search">
+                    Search
+                  </button>
+                  <div class="cities-buttons" id="cities-buttons"></div>
+                </div>
               </div>
             </div>
-            <div class="days-forecast">
-              <h2>5-Day Forecast</h2>
-              <ul class="weather-cards">
-                <li class="card">
-                  <h3>( ______ )</h3>
-                  <h6>Temp: __C</h6>
-                  <h6>Wind: __ M/S</h6>
-                  <h6>Humidity: __%</h6>
-                </li>
-                <li class="card">
-                  <h3>( ______ )</h3>
-                  <h6>Temp: __C</h6>
-                  <h6>Wind: __ M/S</h6>
-                  <h6>Humidity: __%</h6>
-                </li>
-                <li class="card">
-                  <h3>( ______ )</h3>
-                  <h6>Temp: __C</h6>
-                  <h6>Wind: __ M/S</h6>
-                  <h6>Humidity: __%</h6>
-                </li>
-                <li class="card">
-                  <h3>( ______ )</h3>
-                  <h6>Temp: __C</h6>
-                  <h6>Wind: __ M/S</h6>
-                  <h6>Humidity: __%</h6>
-                </li>
-                <li class="card">
-                  <h3>( ______ )</h3>
-                  <h6>Temp: __C</h6>
-                  <h6>Wind: __ M/S</h6>
-                  <h6>Humidity: __%</h6>
-                </li>
-              </ul>
+          </form>
+
+          <div class="list-group" id="history"></div>
+        </div>
+        <div class="weather-data">
+          <div class="weather">
+            <div class="details">
+
             </div>
           </div>
+          <div class="days-forecast">
+
+          </div>
+          <ul class="weather-cards" id="weather-cards">
+          </ul>
         </div>
       </div>
     </div>
@@ -86,4 +63,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.4/plugin/utc.min.js"
     integrity="sha512-m00bfmYnAl3plEBlQfeQUhw/U2uvmw29V2+jxSWpAjankMWS+zAsjezbKWDEJNXqWq9o9qQZSOiA2RKDpa4D5w=="
     crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.4/plugin/timezone.min.js" integrity="sha512-pslqxxHAYPCxaSeFSmXXxDkLejD5dbFVC66aiVq0z4v7VTJBU+wqcG1OpNh4p3MjS2D
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.4/plugin/timezone.min.js"
+    integrity="sha512-pslqxxHAYPCxaSeFSmXXxDkLejD5dbFVC66aiVq0z4v7VTJBU+wqcG1OpNh4p3MjS2D6NCwz/H2QmSc7dXxryg=="
+    crossorigin="anonymous"></script>
+  <script src="./assets/js/script.js"></script>
+</body>
+
+</html>

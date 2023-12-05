@@ -16,6 +16,10 @@ h1 {
   padding: 18px 0;
   color: #fff;
 }
+hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 .container {
   display: flex;
   gap: 35px;
@@ -70,12 +74,6 @@ h1 {
 .weather-input .search-btn:hover {
   background: #2c52ed;
 }
-.weather-input .location-btn {
-  background: #6C757D;
-}
-.weather-input .location-btn:hover {
-  background: #5c636a;
-}
 .weather-data {
   width: 100%;
 }
@@ -111,8 +109,9 @@ h1 {
   margin: 20px 0;
   font-size: 1.5rem;
 }
-.days-forecast .weather-cards {
+.weather-cards {
   display: flex;
+  flex-wrap: nowrap;
   gap: 20px;
 }
 .weather-cards .card {
