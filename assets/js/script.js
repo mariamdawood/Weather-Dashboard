@@ -1,5 +1,7 @@
 const apiKey = '910cdcb0016aef6dbea4901757de5da6';
 
+const formattedDate = dayjs().format('MMMM D, YYYY');
+
 const searchBar = document.querySelector('#search-input')
 const searchButton = document.querySelector('#search-button')
 
@@ -10,10 +12,6 @@ const citiesButtons = document.querySelector('#cities-buttons')
 
 function convertCity(event) {
   event.preventDefault()
-
-  daysForecast.innerHTML = '';
-  details.innerHTML = '';
-  weatherCards.innerHTML = '';
 
   fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${searchBar.value}&appid=${apiKey}`)
     .then(response => {
@@ -30,6 +28,7 @@ function convertCity(event) {
 }
 
 function getWeather(lat, lon) {
+
   // Make a GET request
   fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`)
     .then(response => {
@@ -45,6 +44,7 @@ function getWeather(lat, lon) {
       console.log(data);
       createCurrent(data);
       createCards(data);
+      createSearchHistoryButtons(data)
     })
     .catch(error => {
       // Handle errors
@@ -56,14 +56,22 @@ searchButton.addEventListener('click', convertCity)
 
 function createCurrent(data) {
 
+  details.innerHTML = ""
+
   const currentWeather = document.createElement('div')
   currentWeather.classList = 'details'
 
-  const currentCityAndDate = `${data.city.name} ( ${data.list[0].dt_txt} )`;
+  const currentDate = formattedDate;
+
+  const currentCityAndDate = `${data.city.name} ( ${currentDate} )`;
 
   const current = document.createElement('h2')
   current.textContent = currentCityAndDate
   currentWeather.appendChild(current)
+
+  const currentIcon = document.createElement('img')
+  currentIcon.src = `https://openweathermap.org/img/w/${data.list[0].weather[0].icon}.png`;
+  currentWeather.appendChild(currentIcon)
 
   const kelvinTemperature = data.list[0].main.temp;
   const fahrenheitTemperature = kelvinToFahrenheit(kelvinTemperature);
@@ -84,23 +92,36 @@ function createCurrent(data) {
   currentWeather.appendChild(currentHumidity)
 
   details.appendChild(currentWeather);
+
 }
 
 function createCards(data) {
+  daysForecast.innerHTML = '';
+  weatherCards.innerHTML = '';
 
   const header = document.createElement('h2');
   header.textContent = '5-Day Forecast';
   daysForecast.appendChild(header);
 
   const cardsNumber = Math.min(data.list.length, 5);
+
   for (let index = 0; index < cardsNumber; index++) {
 
+    
     const listItem = document.createElement('li')
     listItem.classList = 'card'
+    
+    const date = formattedDate; 
 
-    const date = document.createElement('h3')
-    date.textContent = data.list[index].dt_txt
-    listItem.appendChild(date)
+    const cityAndDateinfo = `${data.city.name} ${date}`
+
+    const cityAndDate = document.createElement('h3')
+    cityAndDate.textContent = cityAndDateinfo
+    listItem.appendChild(cityAndDate)
+
+    const icon = document.createElement('img')
+    icon.src = `https://openweathermap.org/img/w/${data.list[index].weather[0].icon}.png`;
+    listItem.appendChild(icon)
 
     const kelvinTemperature = data.list[index].main.temp;
     const fahrenheitTemperature = kelvinToFahrenheit(kelvinTemperature);
@@ -122,6 +143,7 @@ function createCards(data) {
 
     // has to be on the bottom
     weatherCards.appendChild(listItem)
+
   }
 }
 
@@ -138,50 +160,61 @@ function createSeparator() {
   return separator;
 }
 
-let searchedCities = [];
+function createSearchHistoryButtons(data) {
 
-function createSearchHistoryButtons(event) {
-  event.preventDefault()
-  const city = searchBar.value.trim(); // Trim to remove leading and trailing whitespaces
+  const city = `${data.city.name}`
+  const searchHistoryButtons = document.createElement('button');
+  searchHistoryButtons.textContent = city;
 
-  if (searchedCities.includes(city)) {
-    // City already in the search history, do not repeat
+  // Check if a button with the same city name already exists
+  const existingButton = Array.from(citiesButtons.children).find(button => button.textContent === city);
+
+  if (existingButton) {
+    // If button already exists, return or perform any other desired action
     return;
   }
-  searchedCities.push(city);
-  localStorage.setItem('searchedCities', JSON.stringify(searchedCities));
+
   const separator = createSeparator();
 
-  const searchHistoryButtons = document.createElement('button');
-  searchHistoryButtons.textContent = searchBar.value;
-
-  searchHistoryButtons.addEventListener('click', convertCity)
-
-  citiesButtons.appendChild(separator);  // Append separator before the button
+  citiesButtons.appendChild(separator);
   citiesButtons.appendChild(searchHistoryButtons);
 
-  searchHistoryButtons.addEventListener('click', function () {
-    convertCity()
-  });
+  searchHistoryButtons.addEventListener('click', function (event) {
+    event.preventDefault()
+    const storedDataJSON = localStorage.getItem(city);
+
+    // Parse the JSON string to get the stored data object
+    const storedData = JSON.parse(storedDataJSON);
+
+    if (storedData) {
+      createCurrent(data);
+      createCards(data);
+    }
+  })
+
+  const storedObject = {
+    city,
+    data
+  };
+
+  const storedObjectJSON = JSON.stringify(storedObject);
+  localStorage.setItem(city, storedObjectJSON);
+
+
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-  let storedCities = localStorage.getItem('searchedCities');
-  if (storedCities) {
-    searchedCities = JSON.parse(storedCities);
-    // Add buttons for each city in the search history
-    searchedCities.forEach(function (city) {
-      const separator = createSeparator();
-      const searchHistoryButtons = document.createElement('button');
-      searchHistoryButtons.textContent = city;
+// Function to load search history from local storage and create buttons
+function loadSearchHistory() {
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    const storedDataJSON = localStorage.getItem(key);
+    const storedData = JSON.parse(storedDataJSON);
 
-      citiesButtons.appendChild(separator);
-      citiesButtons.appendChild(searchHistoryButtons);
-
-      searchHistoryButtons.addEventListener('click', function () {
-        convertCity()
-      });
-    });
+    if (storedData) {
+      createSearchHistoryButtons(storedData.data);
+    }
   }
-});
+}
 
+// Call the function when the page loads
+window.addEventListener('load', loadSearchHistory);
