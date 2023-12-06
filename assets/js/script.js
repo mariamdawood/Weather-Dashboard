@@ -13,7 +13,7 @@ const citiesButtons = document.querySelector('#cities-buttons');
 function convertCity(event) {
   event.preventDefault();
   // Fetch API
-  fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${searchBar.value}&appid=${apiKey}`)
+  fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${searchBar.value}&appid=${apiKey}`)
     // Retrieve response.json
     .then(response => {
       return response.json();
